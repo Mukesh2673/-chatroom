@@ -1,16 +1,24 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+<div>
+ <h1>welcome to Chat app</h1>
+ <ChatRoom />
+</div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+//import SocketioService from './service/socketio.service';
+import ChatRoom from './components/chatRoom.vue'
 export default {
   name: 'App',
   components: {
-    HelloWorld
-  }
+    ChatRoom
+  },
+/*   created(){
+    SocketioService.setupSocketConnection();
+  },
+  beforeUnmount(){
+    SocketioService.disconnect();
+  } */
 }
 </script>
 
