@@ -1,6 +1,7 @@
 <template>
+
   <div class="wholchat">
-    <div class="container">
+    <div class="container mt-5">
       <div class="row bg-primary text-light top">
         <div class="headerb">
           <div class="left" style="display: flex">
@@ -15,7 +16,7 @@
               <h1 style="font-size: 20px">ChatBox</h1>
             </div>
           </div>
-          <div class="btn btn-success leave">Leave Room</div>
+          <div class="btn btn-success leave" @click="leaveRoom">Leave Room</div>
         </div>
       </div>
       <div class="row">
@@ -24,19 +25,20 @@
             <i class="far fa-comments" style="font-size: 20px"></i>&nbsp;Room
             Name:
           </div>
-
-          <select class="custom-select">
-            <option selected>Select Room</option>
-            <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
+           <div style="margin-left:25px"> 
+          <select class="custom-select" v-model="selected" @change="kk">
+             <option disabled value="">Room</option>
+            <option>One</option>
+            <option>Two</option>
+            <option>Three</option>
           </select>
-          <div style="margin-left: -40px">
-            <i class="fas fa-users" style="font-size:20px margin-left:20px"></i
-            >Users
           </div>
-          <div>Brad</div>
-          <div>John</div>
+          <div style="margin-left: 0px">
+            <i class="fas fa-users" style="font-size:20px margin-left:20px"></i
+            >&nbsp;&nbsp;Users
+          </div>
+          <div style="margin-left:30px">Brad</div>
+          <div style="margin-left:30px">John</div>
         </div>
 
         <div class="col-md-8 chatbox">
@@ -46,7 +48,9 @@
             v-for="items in inbox"
             :key="items?.id"
           >
-            {{ items }}
+          <span style="font-size:10px; float:left;">{{items.username}} {{items.time}}</span>
+            &nbsp;&nbsp;&nbsp;&nbsp; {{ items.text }}
+          
           </div>
         </div>
       </div>
@@ -73,29 +77,39 @@ class SocketioService {
 
   setupSocketConnection(t) {
     this.socket = io(process.env.VUE_APP_SOCKET_ENDPOINT);
-
     //emit message to server
-    this.socket.emit("my message", t);
-    this.socket.on("message", (message) => {
-      console.log("message:" + message);
-    });
+    this.socket.emit("mymessage", t);
+
+    /* this.socket.on("message", (message) => {
+      console.log("messagddde:" + message);
+    }); */
+    console.log(t);
   }
 
    reply(newMessage) {
     this.socket.on("message", (x) => {
-      console.log("om", x);
       newMessage.message = x;
         newMessage.inbox = [...newMessage.inbox, x];
+        newMessage.message=''
+
     });
-    console.log("hthjhsid", newMessage);
     return newMessage;
   }
 
-  disconnect() {
-    if (this.socket) {
+  disconnect(){
+    if (this.socket){
       this.socket.disconnect();
     }
   }
+  welcome(){
+    //this.socket.welcome();
+      this.socket = io(process.env.VUE_APP_SOCKET_ENDPOINT);
+      this.socket.emit("mymessage", 'welcome to ChatBorad');
+      console.log('welcome useffff');
+      }
+   newjoiner(){
+     console.log('hello new joiner');
+   }
 }
 let test = new SocketioService();
 
@@ -103,20 +117,28 @@ export default {
   setup() {},
   data() {
     return {
-      message: "",
+      message:"",
       inbox: [],
+      selected:''
     };
   },
   methods: {
      dmessage() {
+ 
       let msg = this.message;
-      this.inbox = [...this.inbox, msg];
-      test.setupSocketConnection(msg);
+    test.setupSocketConnection(msg);
      test.reply(this);
-  
     },
-  },
+    leaveRoom(){
+      test.disconnect();
+      this.$router.push('/')
+    }
 
+  },
+ beforeCreate(){
+   test.welcome();
+    test.reply(this);
+ }
 };
 </script>
 
