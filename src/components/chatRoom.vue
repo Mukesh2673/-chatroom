@@ -71,26 +71,29 @@
 </template>
 <script>
 import { io } from "socket.io-client";
+
 class SocketioService {
   socket;
   constructor() {}
 
   setupSocketConnection(t) {
-    this.socket = io(process.env.VUE_APP_SOCKET_ENDPOINT);
+
     //emit message to server
     this.socket.emit("mymessage", t);
+    console.log(t);
 
-    /* this.socket.on("message", (message) => {
-      console.log("messagddde:" + message);
-    }); */
+
+ 
     console.log(t);
   }
 
    reply(newMessage) {
     this.socket.on("message", (x) => {
+      console.log('runt');
       newMessage.message = x;
         newMessage.inbox = [...newMessage.inbox, x];
         newMessage.message=''
+ 
 
     });
     return newMessage;
@@ -101,43 +104,73 @@ class SocketioService {
       this.socket.disconnect();
     }
   }
-  welcome(){
-    //this.socket.welcome();
-      this.socket = io(process.env.VUE_APP_SOCKET_ENDPOINT);
-      this.socket.emit("mymessage", 'welcome to ChatBorad');
-      console.log('welcome useffff');
-      }
-   newjoiner(){
-     console.log('hello new joiner');
-   }
+
+  
 }
 let test = new SocketioService();
 
 export default {
-  setup() {},
+  setup() {
+    
+  },
   data() {
     return {
       message:"",
       inbox: [],
-      selected:''
+      selected:'',
+      socket:'',
+      k:''
     };
   },
   methods: {
      dmessage() {
- 
+      console.log('send message',this.message);
       let msg = this.message;
-    test.setupSocketConnection(msg);
-     test.reply(this);
+      this.socket.emit("mymessage", msg);
+         this.socket.on('newmessage',(dataf)=>{
+         this.k=dataf;
+        console.log('hi',dataf);
+
+         console.log('okl');
+       });
+
+     },
+     remessage(){
+       console.log('recieved');
+       this.socket.on('newmessage',(dataf)=>{
+         this.k=dataf;
+        console.log('hi',dataf);
+
+         console.log('okl');
+       });
+     }
+   
+
+
+        
+
+    
+      
+
+
+
+
+     //test.reply(this);
     },
     leaveRoom(){
       test.disconnect();
       this.$router.push('/')
-    }
+    },
+  
 
-  },
- beforeCreate(){
-   test.welcome();
-    test.reply(this);
+ created(){
+  this.socket = io(process.env.VUE_APP_SOCKET_ENDPOINT);
+ },
+ watch:{
+    k(){
+      console.log('hii');
+      console.log(this.k);
+    }
  }
 };
 </script>

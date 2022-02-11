@@ -28,9 +28,8 @@
 </template>
 
 <script>
-//import { io } from "socket.io-client";
-import SocketioService from '../service/socketio.service';
-let test = new SocketioService();
+import { io } from "socket.io-client";
+
 
 
 export default{
@@ -40,15 +39,37 @@ export default{
     data(){
         return{
             username:'',
-            selected:''
+            selected:'',
+            text:"",
+            message:[]
         }
     },
        methods: {
            login(){
-                 test.newjoiner()
-                this.$router.push('/chat')
-              
-           }
+                 console.log(this.username,this.selected);
+                 this.socket = io(process.env.VUE_APP_SOCKET_ENDPOINT);
+         
+                //this.$router.push('/chat')
+                this.socket.on("message:received",(data)=>{
+                    this.message=this.message.concat(data);
+                    console.log('hii',this.message);
+                    console.log('okk');
+                })
+               },
+              sendMessage(){
+                  this.addMessage();
+                  this.text=""
+              },
+              addMessage(){
+                  const message={
+                      id:new Date().getTime(),
+                      text:this.text,
+                      user:this.this.user
+                  }
+                  this.message=this.message.concat(message);
+                  this.socket.emit('message',message);
+              } 
+
     }
 }
 </script>

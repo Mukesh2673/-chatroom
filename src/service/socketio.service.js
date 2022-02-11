@@ -3,13 +3,14 @@ import { io } from 'socket.io-client';
 class SocketioService {
   socket;
   constructor() {}
+  socket = io(process.env.VUE_APP_SOCKET_ENDPOINT);
 
   setupSocketConnection() {
-    this.socket = io(process.env.VUE_APP_SOCKET_ENDPOINT);
     //emit message to server
     this.socket.emit('my message','Hello there from afdsdflkadjfk');
     this.socket.on('message',(message)=>{
       console.log('message:'+message);
+    
     });
   
   
@@ -22,7 +23,8 @@ class SocketioService {
   newjoiner(){
     console.log('hello new joiner');
     this.socket = io(process.env.VUE_APP_SOCKET_ENDPOINT);
-    this.socket.on("allmessage",'a new user join');
+    console.log(process.env.VUE_APP_SOCKET_ENDPOINT)
+    this.socket.emit("allmessage",'a new user join');
     //this.socket.broadcast ?.emit("allmessage", 'a new user join');
     
 }
