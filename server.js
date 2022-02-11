@@ -5,20 +5,60 @@ const io=require('socket.io')(http,{
         origin:['http://localhost:8080']
     }
 });
-app.get('/', (req, res) => {
-  res.send('<h1>Hey Socket.io</h1>');
-});
 
+const formatMessage=require('./utils/Messages')
+const {userJoin,getCurrentUser,userLeave,getRoomUsers}=require('./utils/users')
+
+const botName='mukesh'
 io.on('connection',(socket)=>{
-    console.log('a user connect');
-/*     socket.on('disconnect',()=>{
-        console.log('user disconnected');
-    }); */
-    socket.on('my message',(msg)=>{
-      console.log('message:'+msg);
-    });
-    socket.emit('message','Welcome to Chat');
-});
+    console.log(`user ${socket.id} is connect`);
+
+
+  //Recieve message
+  socket.on('mymessage',data=>{
+    console.log('message Recieved',data);
+    io.sockets.emit('newmessage',formatMessage('mukesh',data));
+  });
+
+  //send message back to client
+  
+
+
+
+   //when user disconnect
+    socket.on('disconnect',()=>{
+      console.log('user disconnect');
+  })
+
+
+
+
+
+
+
+
+
+ 
+      });
+  
+//Run when client disconnect
+
+      
+
+
+
+      http.listen(3000, () => {
+        console.log('listeninghttp on *:3000');
+      });
+
+
+
+
+
+
+
+ 
+ 
 
 
 
@@ -33,6 +73,4 @@ io.on('connection',(socket)=>{
 
 
 
-http.listen(3000, () => {
-  console.log('listeninghttp on *:3000');
-});
+
