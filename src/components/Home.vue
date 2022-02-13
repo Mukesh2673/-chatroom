@@ -41,36 +41,30 @@ export default{
             username:'',
             selected:'',
             text:"",
-            message:[]
+            message:[],
+            socket:""
         }
     },
        methods: {
            login(){
                  console.log(this.username,this.selected);
-                 this.socket = io(process.env.VUE_APP_SOCKET_ENDPOINT);
-         
-                //this.$router.push('/chat')
-                this.socket.on("message:received",(data)=>{
-                    this.message=this.message.concat(data);
-                    console.log('hii',this.message);
-                    console.log('okk');
-                })
-               },
-              sendMessage(){
-                  this.addMessage();
-                  this.text=""
-              },
-              addMessage(){
-                  const message={
-                      id:new Date().getTime(),
-                      text:this.text,
-                      user:this.this.user
-                  }
-                  this.message=this.message.concat(message);
-                  this.socket.emit('message',message);
-              } 
+                 let d={'username':this.username,'room': this.selected}
+                 localStorage.setItem("login", JSON.stringify(d));
 
-    }
+   
+                 this.$router.push('/chat')
+                  
+                  
+                  //this.socket.emit("mymessage", msg);
+               },
+              
+            
+              },
+               created(){
+                            this.socket = io(process.env.VUE_APP_SOCKET_ENDPOINT);
+                        }
+
+    
 }
 </script>
 

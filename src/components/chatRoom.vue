@@ -70,55 +70,35 @@
   </div>
 </template>
 <script>
+import {ref} from 'vue';
 import { io } from "socket.io-client";
-
-class SocketioService {
-  socket;
-  constructor() {}
-
-  setupSocketConnection(t) {
-
-    //emit message to server
-    this.socket.emit("mymessage", t);
-    console.log(t);
-
-
- 
-    console.log(t);
-  }
-
-   reply(newMessage) {
-    this.socket.on("message", (x) => {
-      console.log('runt');
-      newMessage.message = x;
-        newMessage.inbox = [...newMessage.inbox, x];
-        newMessage.message=''
- 
-
-    });
-    return newMessage;
-  }
-
-  disconnect(){
-    if (this.socket){
-      this.socket.disconnect();
-    }
-  }
-
-  
-}
-let test = new SocketioService();
-
 export default {
   setup() {
-    
+ const socket=ref('')
+socket.value = io(process.env.VUE_APP_SOCKET_ENDPOINT);
+let t = JSON.parse(localStorage.getItem('login'));
+console.log(t);
+
+                 socket.value.emit("joinRoom", t);
+const test=()=>{
+                  socket.value.on('mukesh',(dataf)=>{
+                    console.log(dataf);
+                    console.log('hi')
+
+       });
+
+}
+test();
+
+
+return {socket,test}
   },
   data() {
     return {
       message:"",
       inbox: [],
       selected:'',
-      socket:'',
+     
       k:''
     };
   },
@@ -129,24 +109,22 @@ export default {
       this.socket.emit("mymessage", msg);
          this.socket.on('newmessage',(dataf)=>{
          this.k=dataf;
-        console.log('hi',dataf);
+         this.message=''
+         console.log(dataf);
+ 
 
-         console.log('okl');
        });
 
      },
-     remessage(){
-       console.log('recieved');
-       this.socket.on('newmessage',(dataf)=>{
-         this.k=dataf;
-        console.log('hi',dataf);
-
-         console.log('okl');
-       });
-     }
+ 
    
 
-
+  leaveRoom(){
+      //console.log('leave room')
+       this.socket.disconnect();
+       localStorage.clear();
+       this.$router.push('/')
+    },
         
 
     
@@ -157,20 +135,30 @@ export default {
 
      //test.reply(this);
     },
-    leaveRoom(){
-      test.disconnect();
-      this.$router.push('/')
-    },
+  
   
 
  created(){
-  this.socket = io(process.env.VUE_APP_SOCKET_ENDPOINT);
+ 
+    this.socket.on('newmessage',(dataf)=>{
+         
+          this.k=dataf;
+           this.message=''
+       
+ 
+
+       });
+         
+
  },
+
+
  watch:{
     k(){
-      console.log('hii');
       console.log(this.k);
-    }
+      this.inbox = [...this.inbox, this.k];
+      
+    },
  }
 };
 </script>
