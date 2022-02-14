@@ -11,9 +11,12 @@
                 aria-hidden="true"
                 style="font-size: 30px"
               ></i>
+           
             </div>
             <div class="apptitle mt-1">
+    
               <h1 style="font-size: 20px">ChatBox</h1>
+   
             </div>
           </div>
           <div class="btn btn-success leave" @click="leaveRoom">Leave Room</div>
@@ -35,10 +38,20 @@
           </div>
           <div style="margin-left: 0px">
             <i class="fas fa-users" style="font-size:20px margin-left:20px"></i
-            >&nbsp;&nbsp;Users
+            >
+            
+            &nbsp;&nbsp;Users
+           
           </div>
-          <div style="margin-left:30px">Brad</div>
-          <div style="margin-left:30px">John</div>
+          <div style="margin-left:30px;display:flex" v-for="items in   usersd" :key="items.id">
+            <div>{{items.username}}</div>
+            <div><i class="fa fa-circle" style="font-size:10px;color:green;margin-left:10px"></i></div>
+            
+
+
+
+          </div>
+        
         </div>
 
         <div class="col-md-8 chatbox">
@@ -75,9 +88,10 @@ import { io } from "socket.io-client";
 export default {
   setup() {
  const socket=ref('')
+ const currentuser=ref('')
 socket.value = io(process.env.VUE_APP_SOCKET_ENDPOINT);
 let t = JSON.parse(localStorage.getItem('login'));
-console.log(t);
+currentuser.value=t.username;
 
                  socket.value.emit("joinRoom", t);
 const test=()=>{
@@ -91,15 +105,17 @@ const test=()=>{
 test();
 
 
-return {socket,test}
+return {socket,test,currentuser}
   },
   data() {
     return {
       message:"",
       inbox: [],
       selected:'',
-     
-      k:''
+      k:'',
+      roomusers:[],
+      count:0,
+
     };
   },
   methods: {
@@ -120,31 +136,42 @@ return {socket,test}
    
 
   leaveRoom(){
-      //console.log('leave room')
-       this.socket.disconnect();
-       localStorage.clear();
-       this.$router.push('/')
-    },
-        
-
-    
+     
+      console.log(this.currentuser);
+      let t=this.currentuser;
+      console.log(t);
+      this.socket.emit('mike');
       
-
-
-
-
-     //test.reply(this);
+      this.socket.on("remaining",(data)=>{
+        console.log('hihihii');
+        console.log(data);
+      }
+      );
+       //this.socket.disconnect();
+    
+       
+       //this.$router.push('/')
+    },
+    
     },
   
   
 
  created(){
- 
+   this.count++;
+   console.log('count',this.count)
     this.socket.on('newmessage',(dataf)=>{
-         
-          this.k=dataf;
-           this.message=''
-       
+    this.k=dataf;
+    this.message=''
+    this.socket.on('roomUsers', ({ room, users }) => {
+    console.log('room users list ',room,users);
+      console.log(users);  
+    this.roomusers=users;
+ 
+});
+    
+
+
  
 
        });
@@ -155,11 +182,19 @@ return {socket,test}
 
  watch:{
     k(){
-      console.log(this.k);
+    
       this.inbox = [...this.inbox, this.k];
+      console.log('roomusers',this.roomusers);
       
     },
- }
+    },
+    computed:{
+      usersd:function(){
+        return this.roomusers;
+      }
+    }
+
+    
 };
 </script>
 
