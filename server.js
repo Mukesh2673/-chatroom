@@ -16,7 +16,7 @@ io.on('connection',(socket)=>{
 
   //Recieve message
   socket.on('mymessage',data=>{
-    console.log('message Recieved',data);
+   
      //send message back to client
     io.sockets.emit('newmessage',formatMessage('mukesh',data));
   });
@@ -29,9 +29,9 @@ io.on('connection',(socket)=>{
 
 
   socket.on('joinRoom', (data) => {
-    console.log(data);
+
     const user = userJoin(socket.id, data.username, data.room);
-    console.log('hi',user);
+
 
     socket.join(user.room);
 
@@ -39,7 +39,7 @@ io.on('connection',(socket)=>{
     socket.emit('newmessage', formatMessage('janu', 'Welcome to ChatCord!'));
     //socket.emit('mukesh', formatMessage('janu', 'Welcome to ChatCord!'));
 
-    console.log('messagesend')
+ 
     // Broadcast when a user connects
     socket.broadcast
       .to(user.room)
@@ -54,17 +54,36 @@ io.on('connection',(socket)=>{
       users: getRoomUsers(user.room)
     });
     
+
+    socket.on('disconnect',()=>{
+      let id=socket.id;
+      const user = userLeave(socket.id);
+      console.log('this is the current user',user);
+      console.log(`${data.username} disconnected`);
+      io.sockets.emit('newmessage',formatMessage('mukesh',`${data.username} has left Room `));
+  
     
+        
+      //io.sockets.emit('remaininguser',user);
+ 
+    });
+
+  socket.emit("mik",'five');
+ 
+
+
 
     
   });
 
 
 
-
-
-
-
+  socket.on('mike', (data) => {
+      const user = userLeave(socket.id);
+      console.log('joo',user);
+      console.log(socket.id);
+    socket.emit('remaining',user)
+  })
 
 
 
@@ -77,12 +96,13 @@ io.on('connection',(socket)=>{
 
 
    //when user disconnect
-    socket.on('disconnect',()=>{
-      console.log('user disconnect');
+/*     socket.on('disconnect',(data)=>{
+      console.log(data);
+      console.log('user disconfnect',data);
       io.sockets.emit('newmessage',formatMessage('mukesh','user left'));
   })
 
-
+ */
 
 
 
