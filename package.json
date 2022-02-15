@@ -13,7 +13,8 @@
     "express": "^4.17.2",
     "moment": "^2.29.1",
     "socket.io": "^4.4.1",
-    "uid": "^2.0.0"
+    "uid": "^2.0.0",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"

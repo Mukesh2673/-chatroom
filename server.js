@@ -56,34 +56,38 @@ io.on('connection',(socket)=>{
     
 
     socket.on('disconnect',()=>{
-      let id=socket.id;
-      const user = userLeave(socket.id);
       console.log('this is the current user',user);
       console.log(`${data.username} disconnected`);
       io.sockets.emit('newmessage',formatMessage('mukesh',`${data.username} has left Room `));
-  
+      //io.sockets.emit('testcase','hii');
     
         
       //io.sockets.emit('remaininguser',user);
  
     });
 
-  socket.emit("mik",'five');
+
  
 
-
+  socket.on('mike', (data) => {
+    const user = userLeave(socket.id);
+    console.log('joo',user);
+    console.log(socket.id);
+    io.sockets.emit('testcase',user);
+  //socket.emit('remaining',user)
+})
 
     
   });
 
 
 
-  socket.on('mike', (data) => {
+/*   socket.on('mike', (data) => {
       const user = userLeave(socket.id);
       console.log('joo',user);
       console.log(socket.id);
     socket.emit('remaining',user)
-  })
+  }) */
 
 
 

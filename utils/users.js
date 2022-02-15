@@ -26,12 +26,14 @@ return users.find(user=>user.id === id)
 
 }
 //user leaves chat
-function userLeave(id){
+function userLeave(id,t){
      console.log('leavemessage in users',id)
+     console.log('leavemessageasfd22 in users',t)
      console.log(users);
+     console.log(t,users[0].username);
  if(users.length>0)
  {
-    users=users?.filter((data)=>(data.id != id));
+    users=users?.filter((data)=>(data.username != t));
 }
 else{
     users=[]
