@@ -50,8 +50,8 @@ export default{
                  console.log(this.username,this.selected);
                  let d={'username':this.username,'room': this.selected}
                  localStorage.setItem("login", JSON.stringify(d));
+                 this.$store.commit('updateuser',d)
 
-   
                  this.$router.push('/chat')
                   
                   

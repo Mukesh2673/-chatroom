@@ -24,10 +24,22 @@
       </div>
       <div class="row">
         <div class="col-md-4 bg-dark text-light">
-          <div>
+          <div style="display:flex; justify-content:space-between">
+            <div>
             <i class="far fa-comments" style="font-size: 20px"></i>&nbsp;Room
             Name:
+            </div>
+            <div>
+              Room:{{this.room}}
+            </div>
+            <div>
+               <i class="fas fa-user" style="font-size:20px margin-left:20px"></i
+            >
+              {{this.currentuser}}
+            </div>
+            
           </div>
+      
            <div style="margin-left:25px"> 
           <select class="custom-select" v-model="selected" @change="kk">
              <option disabled value="">Room</option>
@@ -35,6 +47,7 @@
             <option>Two</option>
             <option>Three</option>
           </select>
+
           </div>
           <div style="margin-left: 0px">
             <i class="fas fa-users" style="font-size:20px margin-left:20px"></i
@@ -85,27 +98,33 @@
 <script>
 import {ref} from 'vue';
 import { io } from "socket.io-client";
+import {useStore} from 'vuex'
 export default {
   setup() {
+  const store=useStore()
  const socket=ref('')
  const currentuser=ref('')
+ const roomusers=ref([])
+ const room=ref('')
+
+let  v=store.state.currentuser?.username
+currentuser.value=v;
+
+
 socket.value = io(process.env.VUE_APP_SOCKET_ENDPOINT);
 let t = JSON.parse(localStorage.getItem('login'));
 currentuser.value=t.username;
-
+room.value=t.room
                  socket.value.emit("joinRoom", t);
-const test=()=>{
-                  socket.value.on('mukesh',(dataf)=>{
-                    console.log(dataf);
-                    console.log('hi')
 
-       });
-
-}
-test();
+socket.value.on('testcase',(t)=>{
+  console.log('hellotester',t);
+  roomusers.value=t;
+});
 
 
-return {socket,test,currentuser}
+
+return {socket,currentuser,roomusers,room}
   },
   data() {
     return {
@@ -113,23 +132,18 @@ return {socket,test,currentuser}
       inbox: [],
       selected:'',
       k:'',
-      roomusers:[],
       count:0,
 
     };
   },
   methods: {
      dmessage() {
-      console.log('send message',this.message);
       let msg = this.message;
       this.socket.emit("mymessage", msg);
          this.socket.on('newmessage',(dataf)=>{
          this.k=dataf;
          this.message=''
-         console.log(dataf);
- 
-
-       });
+         });
 
      },
  
@@ -137,20 +151,18 @@ return {socket,test,currentuser}
 
   leaveRoom(){
      
-      console.log(this.currentuser);
-      let t=this.currentuser;
-      console.log(t);
-      this.socket.emit('mike');
       
-      this.socket.on("remaining",(data)=>{
-        console.log('hihihii');
-        console.log(data);
+      let t=this.currentuser;
+      
+      this.socket.emit('mike',t);
+      
+      this.socket.on("testcase",(data)=>{
+      
+        this.roomusers=data;
       }
       );
        //this.socket.disconnect();
-    
-       
-       //this.$router.push('/')
+       this.$router.push('/')
     },
     
     },
@@ -159,13 +171,10 @@ return {socket,test,currentuser}
 
  created(){
    this.count++;
-   console.log('count',this.count)
     this.socket.on('newmessage',(dataf)=>{
     this.k=dataf;
     this.message=''
     this.socket.on('roomUsers', ({ room, users }) => {
-    console.log('room users list ',room,users);
-      console.log(users);  
     this.roomusers=users;
  
 });
@@ -184,7 +193,6 @@ return {socket,test,currentuser}
     k(){
     
       this.inbox = [...this.inbox, this.k];
-      console.log('roomusers',this.roomusers);
       
     },
     },
