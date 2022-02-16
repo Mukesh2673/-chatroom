@@ -24,6 +24,13 @@
   </div>
 </div>
 
+
+
+
+
+
+
+
 </div>
 </template>
 
@@ -60,9 +67,7 @@ export default{
               
             
               },
-               created(){
-                            this.socket = io(process.env.VUE_APP_SOCKET_ENDPOINT);
-                        }
+               
 
     
 }
