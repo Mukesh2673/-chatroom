@@ -3,22 +3,33 @@ var users=[];
 //join user to chat
 function userJoin(id,username,room){
 
-    const user={id,username,room};
-    if(users.length>0)
-    {
+    username = username.trim().toLowerCase();
+    room = room.trim().toLowerCase();
 
-    let inArr=users.filter(data=>(data.username==user.username))
-    if(inArr.length<=0)
-    {
-    users.push(user);    
-    }
+    const user = {
+        id,
+        username,
+        room
+    };
  
-    }
-    else{
-        users.push(user); 
-        }
-    return user;
+    const uname = users.findIndex((user1) => 
+    user1.username === username
+  );
+  if(uname>=0)
+  {
+    console.log('splice');
+    users.splice(uname,1,user);
+  }
+  else{
+ users = [...users,user]
+  }
 
+  console.log('index',uname);
+  
+  console.log('function array',users);
+
+    return users
+    
 }
 //Get current user
 function getCurrentUser(id){
@@ -26,11 +37,8 @@ return users.find(user=>user.id === id)
 
 }
 //user leaves chat
-function userLeave(id,t){
-     console.log('leavemessage in users',id)
-     console.log('leavemessageasfd22 in users',t)
-     console.log(users);
-     console.log(t,users[0].username);
+/* function userLeave(id,t){
+  
  if(users.length>0)
  {
     users=users?.filter((data)=>(data.username != t));
@@ -41,21 +49,21 @@ else{
 return users;
  
 // console.log('users',users);
-}
+} */
 
 
 
 //get room users
 function getRoomUsers(room){
+    
     return users.filter(user=>user.room === room);
 }
 module.exports={
     userJoin,
     getCurrentUser,
-    userLeave,
+ 
     getRoomUsers
 };
-
 
 
 
