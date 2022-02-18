@@ -190,6 +190,10 @@ socket.value.on('testcase',(t)=>{
   roomusers.value=t;
 });
 
+socket.value.on("smessage",(data)=>{
+             console.log(data);
+
+        });
 
 
 return {socket,currentuser,roomusers,room}
@@ -200,12 +204,14 @@ return {socket,currentuser,roomusers,room}
       inbox: [],
       selected:'',
       k:'',
+      p:'',
       currentuser:'',
      
       p_display:'none',
       P_user:'',
       P_inbox:[],
-     P_message:""
+     P_message:"",
+
     
     };
   },
@@ -223,9 +229,13 @@ return {socket,currentuser,roomusers,room}
         this.P_inbox=[...this.P_inbox,this.P_message]
       
         this.$refs.scrollp?.lastElementChild?.scrollIntoView()
+        this.socket.emit("pmessage", {reciever:this.P_user,sender:this.currentuser,message:this.P_message,room:this.room});
+        this.P_message=""
+        this.socket.on("smessage",(data)=>{
+             this.p=data;
 
-        this.socket.emit("pmessage", {reciever:this.P_user,sender:this.currentuser,message:this.P_message});
-          this.P_message=""
+        });
+      
       },
  
    
@@ -276,6 +286,9 @@ return {socket,currentuser,roomusers,room}
       this.inbox = [...this.inbox, this.k];
       
     },
+    p(){
+      console.log(this.p);
+    }
     },
     computed:{
       usersd:function(){
