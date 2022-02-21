@@ -32,6 +32,14 @@
             <div>
               Room:{{this.room}}
             </div>
+          <div style="position:relative" class="mt-2" @click="singmessages">
+           <i class="far fa-comment " style="font-size: 20px; font-weight: bold; color:yellow"></i>
+
+           <div style="postion:absolute; margin-top:-40px;margin-left:5px; font-size:25px;color:red;font-weight: bold;" v-if="notification>0">{{notification}}</div>
+          
+          </div> 
+          
+          
             <div>
                <i class="fas fa-user" style="font-size:20px margin-left:20px"></i
             >
@@ -174,6 +182,9 @@ export default {
  const currentuser=ref('')
  const roomusers=ref([])
  const room=ref('')
+ const notification=ref(0)
+ const  P_user=ref('')
+ const  P_inbox=ref([])
 
 let  v=store.state.currentuser?.username
 currentuser.value=v;
@@ -191,12 +202,17 @@ socket.value.on('testcase',(t)=>{
 });
 
 socket.value.on("smessage",(data)=>{
-             console.log(data);
+             if(data){
+               notification.value+=1;
+               P_user.value=data.username;
+              P_inbox.value=[...P_inbox.value,data.text]
+             }
+             console.log('huu',data);
 
         });
 
 
-return {socket,currentuser,roomusers,room}
+return {socket,currentuser,roomusers,room,notification,P_user,P_inbox}
   },
   data() {
     return {
@@ -208,9 +224,10 @@ return {socket,currentuser,roomusers,room}
       currentuser:'',
      
       p_display:'none',
-      P_user:'',
-      P_inbox:[],
+     
+   
      P_message:"",
+     singmessage:false
 
     
     };
@@ -232,10 +249,18 @@ return {socket,currentuser,roomusers,room}
         this.socket.emit("pmessage", {reciever:this.P_user,sender:this.currentuser,message:this.P_message,room:this.room});
         this.P_message=""
         this.socket.on("smessage",(data)=>{
-             this.p=data;
+        this.p=data;
 
         });
       
+      },
+      singmessages(){
+        
+        console.log('hiii');
+        this.p_display='block'
+
+
+
       },
  
    
