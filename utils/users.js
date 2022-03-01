@@ -17,24 +17,18 @@ function userJoin(id,username,room){
   );
   if(uname>=0)
   {
-    console.log('splice');
+
     users.splice(uname,1,user);
   }
   else{
  users = [...users,user]
   }
-
-  console.log('index',uname);
-  
-  console.log('function array',users);
-
     return users
     
 }
 //Get current user
 function getCurrentUser(id){
 return users.find(user=>user.id === id)
-
 }
 //user leaves chat
 /* function userLeave(id,t){
