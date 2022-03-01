@@ -1,9 +1,9 @@
 import Home from './components/Home.vue'
 import Room from './components/chatRoom.vue'
-
+import ChatUI from './components/ChatUI.vue'
 import {createRouter,createWebHistory} from 'vue-router'
 const routes=[{
-    name:'Home',
+    name:'ChatUI',
     component:Home,
     path:'/'
 

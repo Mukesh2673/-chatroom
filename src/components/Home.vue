@@ -10,6 +10,20 @@
         <input type="text" id="username" v-model="username" required>
     </div>
     <div>
+      <label for="username">Password</label>
+    <input type="password" id="username" v-model="password" required>
+     </div>   
+    <div>
+      <label for="image">UploadImage</label>
+    <input type="file" id="image" required>
+     </div>   
+
+
+
+
+
+
+    <div>
         <label for="Room">Room</label><br>
             <select class="selectRoom" v-model="selected" id="Room" required>
              <option disabled value="">Room</option>
@@ -18,6 +32,10 @@
             <option>Three</option>
           </select>
     </div>
+    
+
+
+    
     <div><button class="btn btn-primary mt-2" type="submit">Join Chat</button></div>
    </form> 
     
